@@ -1,34 +1,525 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NextJS + Sanity Studio + TailwindCSS Starter
+
+This is a starter template for [Next.js](https://nextjs.org/), [Sanity Studio](https://www.sanity.io/docs/sanity-studio) and [TailwindCSS](https://tailwindcss.com/). It was created by Sonny Sangha for his Youtube Channel followers and the guided code-along can be found [here](https://www.youtube.com/watch?v=x3fCEPFgUSM&t=2595s).
+
+Oh right. I almost forgot the star of the show - this `npm create sanity@latest -- --template get-started --project lqql357j --dataset production --provider github` command will create a new Sanity project for you. You'll need to have the [Sanity CLI](https://www.sanity.io/docs/getting-started-with-sanity-cli) installed first.
+
+**Don't run it yet** There is a trick - so follow the steps below.
 
 ## Getting Started
 
-First, run the development server:
+1.  Create a new NextJS project using this template by running `npx create-next-app@latest` and follow the prompts. At the time of writing, I chose the all the defaults with the exception of the project name.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+    ```
+    What is your project named? _Your Project Name_
+    Would you like to use TypeScript? No / _Yes_
+    Would you like to use ESLint? _No_ / Yes
+    Would you like to use Tailwind CSS? No / _Yes_
+    Would you like to use `src/` directory? _No_ / Yes
+    Would you like to use App Router? (recommended) No / _Yes_
+    Would you like to customize the default import alias? _No_ / Yes
+    ```
+
+2.  Cd into the new project once its created
+3.  From inside the Next project we work the magic of Sonny's script which will install the Sanity.io studio into our Next app, hook the apps up and configure our enivoronment variables.
+
+    - Note that it may be useful to already have created a Sanity account and logged in before running this script. You can do that [here](https://www.sanity.io/login).
+
+4.  There are a set of additional questions -- some may seem redundant after the questions from next -- but remember you are setting up your Sanity studio - keep it consisten with what you chose for the Next app base.
+
+Ok, You're in. Now `cd` into the project and load'er up.
+
+```
+cd _Your Project Name_
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Test it out. `npm run dev' should fire up the Next boilerplate splash when you navigate to `http://localhost:3000/`and the Sanity Studio should be available at`http://localhost:3000/studio`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Sanity Studio
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Most of the initial setup wherein the Sanity Studio is configured to work with NextJS is done for you via the handy installer we ran to get up and running. However, there are a few things you'll want to do to customize your studio.
 
-## Learn More
+1. In the `sanity.config.ts` file under the `projectID` add a name and title that the studio will use. This is not required, but is nice:
 
-To learn more about Next.js, take a look at the following resources:
+```
+// ... code above
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+export default defineConfig({
+  basePath: '/studio',
+  projectId,
+  name: 'BG-Lab_Content_Studio',
+  title: 'BG-Lab Content Studio',
+  dataset,
+  // Add and edit the content schema in the './sanity/schema' folder
+  schema,
+  plugins: [
+    deskTool(),
+    // Vision is a tool that lets you query your content with GROQ in the studio
+    // https://www.sanity.io/docs/the-vision-plugin
+    visionTool({defaultApiVersion: apiVersion}),
+  ],
+})
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
 
-## Deploy on Vercel
+2. Create a `loading.tsx` file in `studio/[[...index]]` and add the following code:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+'use client'
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+import {NextStudio} from 'next-sanity/studio'
+
+import config from '../../../sanity.config'
+
+export default function StudioPage() {
+// Supports the same props as `import {Studio} from 'sanity'`, `config` is required
+return <NextStudio config={config} />
+}
+```
+
+3. While Next 13 has reconfigured the Head component for easier implementation, adding a `head.tsx` file is still supported when using the `next-sanity` package. In the `app` folder, add a `head.tsx` file and add the following code:
+
+```
+export default function Head() {
+	return (
+		<>
+			<title>BG-Lab Blog</title>
+			<meta name='viewport' content='initial-scale=1.0, width=device-width' />
+			<link rel='icon' href='/favicon.ico' />
+		</>
+	);
+}
+```
+
+4. Now bring in teh Head component into the `layout.tsx` file just above the `<body>` tag:
+
+```
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import Head from './head';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+	title: 'BG-Copies-Sonny',
+	description: 'Generated by create next app',
+};
+
+export default function RootLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	return (
+		<html lang='en'>
+			<Head />
+			<body className={inter.className}>{children}</body>
+		</html>
+	);
+}
+```
+
+## Populate Content in your Sanity Studio
+
+You heard me. This is the boring part. Well, maybe not boring, and maybe you'll have fun doing but there is a risk that you get carried away from this build for too long while adding in your content that it becomes hard to pick up where you left off. The choise is yours, you can populate with proper content now, or you can add in some dummy content and come back to it later. Just head to hipster ipsum or, even easier, if you have emmet installed in your editor, just type `lorem` with a number for character length you want and hit tab. Copy that and pop it into your content.
+
+## Optional Customization of the Sanity Studio
+
+### Create a Theme File
+
+1. At the top leve of your file structure, create a `theme.ts` file and add the following code, most of which sets out our personalized color shceme:
+
+```
+
+import { buildLegacyTheme } from '@sanity'
+
+const props = {
+"--my-white": '#f3f3f3',
+"--my-black": '#1a1a1a',
+"--my-brand": '#D28540',
+"--my-red": '#854B50',
+"--my-green": '#818E7B',
+"--my-yellow": '#E4CA60',
+}
+
+export const myTheme = buildLegacyTheme({
+"--gray-base": "#666",
+
+      "--component-bg": props["--my-black"],
+      "--component-text-color": props["--my-white"],
+
+      /* BRAND COLORS */
+      "--brand-primary": props["--my-brand"],
+
+      /* DEFAULT BUTTON */
+      "--default-button-color": "#666",
+      "--default-button-primary-color": props["--my-brand"],
+      "--default-button-success-color": props["--my-green"],
+      "--default-button-danger-color": props["--my-red"],
+      "--default-button-warning-color": props["--my-yellow"],
+
+      /* STATE */
+
+      "--state-success-color": props["--my-green"],
+      "--state-danger-color": props["--my-red"],
+      "--state-warning-color": props["--my-yellow"],
+      "--state-info-color": props["--my-brand"],
+
+      /* NAVBAR */
+      "--main-navigation-color": props["--my-black"],
+      "--main-navigation-color--inverted": props["--my-white"],
+
+      "--focus-color": props["--my-brand"],
+
+})
+
+```
+
+2. Now that we've got a theme file built out, we need to head into the `sanity.config.ts` and bring it in so we can use it:
+
+```
+
+import {visionTool} from '@sanity/vision'
+import {defineConfig} from 'sanity'
+import {deskTool} from 'sanity/desk'
+import { myTheme } from './theme' // IMPORT THIS HERE
+
+import {apiVersion, dataset, projectId} from './sanity/env'
+import {schema} from './sanity/schema'
+
+export default defineConfig({
+basePath: '/studio',
+projectId,
+name: 'BG-Lab_Content_Studio',
+title: 'BG-Lab Content Studio',
+dataset,
+// Add and edit the content schema in the './sanity/schema' folder
+schema,
+plugins: [
+deskTool(),
+// Vision is a tool that lets you query your content with GROQ in the studio
+// https://www.sanity.io/docs/the-vision-plugin
+visionTool({defaultApiVersion: apiVersion}),
+],
+theme: myTheme, // ADD THIS HERE
+})
+
+```
+
+In the above, we imported our new theme file and then added it to the `theme` property of the `defineConfig` object just below plugins array.
+
+### Create some new Components for our Studio
+
+1. In the `sanity.config.ts` we will add new studio components just above where we added the theme:
+
+```
+
+// ... other imports
+import StudioNavbar from './app/components/StudioNavbar'
+import Logo from './app/components/Logo'
+
+// ... other code
+
+sudio: {
+components: {
+logo: Logo,
+navbar: StudioNavbar,
+}
+},
+theme: myTheme,
+
+```
+
+Now we need to go and create those components.
+
+2. Create a components folder if you don't already have one - `app/components` and add a `Logo.tsx` and `StudioNavbar.tsx` file.
+
+3. We will be using some nice icons from hero icons that work with TailwindCSS so let's install that package now: `npm install @heroicons/react`
+
+4. In the `SudioNavbar.tsx` file add the following code:
+
+```
+
+import Link from 'next/link'
+
+function StudioNavbar() {
+return (
+<div>SutdioNavbar</div>
+)
+}
+
+export default StudioNavbar
+
+```
+
+5. Create some placeholder code for the logo:
+
+```
+
+function Logo() {
+return <div>Logo</div>;
+}
+
+export default Logo;
+
+```
+
+Now when we navigate to our studio, it's broke. We can see our custome nav but the default, and required Desktop and Vision tool views are gone. Let's get them back.
+
+6. Add props inside the StudioNavbar function:
+
+```
+
+function StudioNavbar(props: any) {
+return <div>{props.renderDefault(props)} </div>;
+}
+
+```
+
+You should now see the old elements back and we can start to customize the navbar while including the default view.
+
+7. Build out some StudioNavbar customizations:
+
+```
+
+import Link from 'next/link';
+import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid';
+
+function StudioNavbar(props: any) {
+return (
+<>
+<div className='flex items-center justify-between p-5'>
+<Link href='/' className='text-[#ffa024] flex items-center'>
+<ArrowUturnLeftIcon className='h-6 w-5 mr-2' />
+Go To Website
+</Link>
+
+    			<div className='hidden md:flex p-5 rounded-lg justify-center border-2 border-[#ffa] '>
+    				<h1 className='font-bold text-white'>
+    					Confused? See Guide to Editing Content Here 🔍{' '}
+    				</h1>
+    				<Link href='#' className='text-[#ffa024] font-bold ml-2'>
+    					Guide to Editing Web Content
+    				</Link>
+    			</div>
+    		</div>
+    		<div>{props.renderDefault(props)} </div>;
+    	</>
+    );
+
+}
+
+export default StudioNavbar;
+
+```
+
+Here we've built out a simple navbar with a link to the website, and a link to a guide for editing content. We've also added a bit of styling to the navbar and the guide link.
+
+8. Add a Logo if you want. This first thing to do is to grab your logo and add it to the `public` folder. I've added a `bg-lab-logo.png` file to the `public` folder and then added the following code to the `Logo.tsx` file:
+
+```
+
+import Link from 'next/link';
+import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid';
+
+function StudioNavbar(props: any) {
+return (
+<>
+<div className='flex items-center justify-between p-5'>
+<Link href='/' className='text-[#ffa024] flex items-center'>
+<ArrowUturnLeftIcon className='h-6 w-5 mr-2' />
+Go To Website
+</Link>
+
+    			<div className='hidden md:flex p-5 rounded-lg justify-center border-2 border-[#ffa] '>
+    				<h1 className='font-bold text-white'>
+    					Confused? See Guide to Editing Content Here 🔍{' '}
+    				</h1>
+    				<Link href='#' className='text-[#ffa024] font-bold ml-2'>
+    					Guide to Editing Web Content
+    				</Link>
+    			</div>
+    		</div>
+    		<div>{props.renderDefault(props)} </div>
+    	</>
+    );
+
+}
+
+export default StudioNavbar;
+
+```
+
+## Add the Preview Functionality to Sanity Studio
+
+1. Navigate in your file structure to `sanity/lib` and create a `sanity.preview.ts` file. Add the following code:
+
+```
+
+
+## Start to build out the Front page
+
+### Folder Structure Organization
+
+1. Inside the `app` folder we are going to create 2 new folders enclosed in parenthesis. Parenthesis are used to leave the folder name out of the route so we can create a `(user)/about.tsx` and the path would simply be `/about`.
+
+2. Create a `(users)` and an `(admin)` folder in the App directory
+
+3. Inside the `(users)` folder, we will drag the existing `page.tsx` file. Ensure your paths for imports into and from the file are either autoupdated or you manually update them.
+
+4. Now grab the entire `studio` folder and put that into the `(admin)` folder. Again, ensure your paths for imports into and from the file are either autoupdated or you manually update them.
+
+5. As an example as to how the parnthesis do not affect the route, we can still navigate to localhost:3000/studio and still load up our studio. The `(admin)` folder is not icluded.
+
+6. Create a new `layout.tsx` filed in the `(admin)` folder. Remove the `<Head />` component as that one refers to the Next app and not the Studio.
+
+### Create the Header Component
+
+1. Navigate into the `components` folder and create a new `Header.tsx` file.
+
+2. Add the following code to the `Header.tsx` file:
+
+```
+
+import Link from 'next/link';
+import Image from 'next/image';
+import logo from '../../public/bg-lab-logo.png';
+
+function Header() {
+return (
+
+<header className='flex items-center justify-between space-x-2 font-bold px-10 py-5'>
+<div className='flex items-center space-x-2'>
+<Link href='/'>
+<Image
+						className='rounded-full'
+						src={logo}
+						width={50}
+						height={50}
+						alt='bg-lab logo'
+					/>
+</Link>
+<h1>The BG-Lab</h1>
+</div>
+</header>
+);
+}
+
+export default Header;
+
+```
+
+3. Bring the Header into the primary layout that controls every part of the app that does not have a specific layout. In the `layout.tsx` file add the following code:
+
+```
+
+import Header from './components/Header';
+import './globals.css';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+title: 'BG-LAB',
+description: 'Generated by create next app',
+};
+
+export default function RootLayout({
+children,
+}: {
+children: React.ReactNode;
+}) {
+return (
+
+<html lang='en'>
+<body>
+<Header />
+{children}
+</body>
+</html>
+);
+}
+
+```
+
+Ensure the header is being rendered inside the `<body>` tag or you may see Next complain about server mismatch.
+
+## Create the Banner Component
+
+1. In the `components` folder create a `Banner.tsx` file
+
+2. Add the following code to the `Banner.tsx` file:
+
+```
+
+function Banner() {
+return <div>Banner</div>;
+}
+
+export default Banner;
+
+```
+
+3. We just created a wee function to render. Now bring it into the `layout.tsx` just below the `<Header />` component:
+
+```
+
+import Banner from './components/Banner';
+import Header from './components/Header';
+import './globals.css';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+title: 'BG-LAB',
+description: 'Generated by create next app',
+};
+
+export default function RootLayout({
+children,
+}: {
+children: React.ReactNode;
+}) {
+return (
+
+<html lang='en'>
+<head />
+<body className='bg-slate-800 text-gray-300'>
+<Header />
+<Banner />
+{children}
+</body>
+</html>
+);
+}
+
+```
+
+4. Add some things to the Banner component:
+
+```
+
+function Banner() {
+return (
+
+<div className='flex flex-col lg:flex-row lg:space-x-5 justify-between font-bold px-10 py-5 mb-10'>
+<div>
+<h1 className='text-7xl'>The BG-Lab Project Site</h1>
+<h2 className='mt-5 md:mt-0'>
+Welcom to the top{' '}
+<span className='underline decoration-2 leading-relaxed decoration-white text-[#ffa024] '>
+Technology, Home Lab and Web Development
+</span>{' '}
+site on the web
+</h2>
+</div>
+<p className='mt-5 md:mt-2 text-gray-400 max-w-sm'>
+Web Development | | Tech Projects | | Home Lab Projects | | Tutorials
+</p>
+</div>
+);
+}
+
+export default Banner;
+
+```
+
+```
