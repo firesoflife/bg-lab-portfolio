@@ -16,11 +16,7 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<head />
-			<body className='bg-slate-800 text-gray-300'>
-				<Header />
-				<Banner />
-				{children}
-			</body>
+			<body className='bg-slate-800 text-gray-300'>{children}</body>
 		</html>
 	);
 }
