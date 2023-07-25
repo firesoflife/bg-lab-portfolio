@@ -353,10 +353,7 @@ export default StudioNavbar;
 
 ## Add the Preview Functionality to Sanity Studio
 
-1. Navigate in your file structure to `sanity/lib` and create a `sanity.preview.ts` file. Add the following code:
-
-```
-
+<!-- To Do -->
 
 ## Start to build out the Front page
 
@@ -496,7 +493,6 @@ return (
 4. Add some things to the Banner component:
 
 ```
-
 function Banner() {
 return (
 
@@ -522,4 +518,394 @@ export default Banner;
 
 ```
 
+## Type Definitions
+
+Before we get in the weeds on fetching data and gettign errors, lets deal with our Type definitions to avoid silly mistakes. In the root of the project create a `typings.d.ts` file and add the following definitions. There is a Base definition that Sanity uses and the rest correspond to the different schemas we have set up:
+
+````
+type Base = {
+    _createdAt: Date;
+    _id: string;
+    _rev: string;
+    _type: string;
+    _updatedAt: Date;
+ };
+
+ interface Post extends Base {
+    author: Author;
+    body: Block[];
+    categories: category[];
+    mainImage: Image;
+    slug: Slug;
+    title: string;
+    description: string;
+ }
+
+ interface Author extends Base {
+    bio: Block[];
+    image: Image;
+    name: string;
+    slug: Slug
+ }
+
+ interface Image extends Base {
+    _type: "image";
+    asset: Reference
+    }
+
+  interface Reference extends Base {
+    _ref: string;
+    _type: "reference";
+    }
+
+    interface Slug extends Base {
+        _type: "slug";
+        current: string;
+    }
+
+    interface Block {
+        _key: string;
+        _type: "block";
+        children: Span[];
+        markDefs: any[];
+        style: "nomal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    }
+
+    interface Span {
+        _key: string;
+        _type: "span";
+        marks: any[];
+        text: string;
+    }
+
+    interface Category extends Base {
+        description: string;
+        title: string;
+    }
+
+    interface mainImage {
+        _type: "image"
+        asset: "reference"
+    }
+
+    interface Title {
+        _type: "string";
+        current: string;
+    }
+	```
+
+* NOTE - ensure you don't have anything auto-imported at the top of your file. If you do, delete it. It will cause errors reading types automatically in other Compoenents
+
+## Fetch Data from Sanity for Blog List
+
+1. In the `app/Components` folder create a `BlogList.tsx` file
+
+2. Add the following code to the `BlogList.tsx` file:
+
+````
+
+type Props = {
+posts: Post[];
+};
+
+function BlogList(posts: Props) {
+return <div>BlogList</div>;
+}
+
+export default BlogList;
+
 ```
+
+3. With the bones of the BlogList in Place. Lets test that we can grab data and render it to our front end. In the `sanity` folder we will create a new folder to hold our calls to the Sanity API. Create a `api` folder and inside that create a `getPosts.tsx` file.
+
+4. We will now write our first, simple Groq query. Add the following code to the `getPosts.tsx` file:
+
+```
+
+import { groq } from 'next-sanity';
+import { client } from '../lib/client';
+
+async function getPosts() {
+return client.fetch(
+groq`
+
+            *[_type == "post"][0]{
+
+title
+}
+`
+);
+}
+
+export default getPosts;
+
+```
+
+* Note that we just fetched a single post, selecting the first in the array by adding the `[0]` - we will remove this later.
+
+5. Now let's test this in our home `page.tsx`:
+
+```
+
+import getPosts from '@/sanity/api/getPosts';
+
+export default async function Home() {
+const post = await getPosts();
+
+    console.log(post);
+
+    return (
+    	<>
+    		<h1>Here is DATA: {post.title} </h1>
+    	</>
+    );
+
+}
+
+```
+
+6. Great, now that we've got stuff rendered to the page, let's get it into our BlogList component. In the `page.tsx` file, add the following code:
+
+```
+
+type Props = {
+posts: Post[];
+};
+
+function BlogList({ posts }: Props) {
+return <div>BlogList</div>;
+}
+
+export default BlogList;
+
+```
+
+7. Now we can bring in the BlogList component into the `page.tsx` file and pass in the `posts` data:
+
+```
+
+import getPosts from '@/sanity/api/getPosts';
+import BlogList from '../components/BlogList';
+
+export default async function Home() {
+const post = await getPosts();
+
+    console.log(post);
+
+    return (
+    	<>
+    		{/* <h1>Here is DATA: {post.title} </h1> */}
+    		<BlogList posts={post} />
+    	</>
+    );
+
+}
+
+```
+
+8. We are also going to change what we fetch in the `getPosts.tsx` file:
+
+```
+
+import { groq } from 'next-sanity';
+import { client } from '../lib/client';
+
+async function getPosts() {
+return client.fetch(
+groq`  
+        *[_type == "post"] {
+            ...,
+            author->,
+            categories[]->,
+        } | order(_createdAt desc)`
+);
+}
+
+export default getPosts;
+
+```
+
+* Note that we've removed the `[0]` from the query and added in the `author` and `categories` fields. We've also added in a `| order(_createdAt desc)` to order the posts by the most recent. This call will fetch the full array of posts.
+
+
+Now if we `console.log(posts)` we see nothing on the front end but we do see the data in the console. This is because we are not rendering anything to the front end and we're in a server side componenent. Let Build out the `BlogList.tsx` now:
+
+## The Blog List Component
+
+1. Now in the `BlogList.tsx` file we will add the following code:
+
+
+```
+
+import Image from 'next/image';
+
+type Props = {
+posts: Post[];
+};
+
+function BlogList({ posts }: Props) {
+return (
+
+<div>
+<hr className='border-[#ffa024] mb-10' />
+
+    		<div>
+    			{/* Posts */}
+    			{posts.map((post) => (
+    				<div key={post._id}>
+    					<div>
+    						<Image
+    							className='object-cover object-left lg:object-center'
+    							src={urlFor(post.mainImage).url()}
+    							alt='image'
+    							fill
+    						/>
+    					</div>
+    				</div>
+    			))}
+    		</div>
+    	</div>
+    );
+
+}
+
+export default BlogList;
+
+```
+
+2. We aren't done yet, but we need to consider carefully the way we handle the `<Image />` tage and the use of the `urlFor` helper function. With the code above, we will be getting an error. Head into the `sanity/lib` folder can create a new `urlFor.ts` file and add the following:
+
+```
+
+import { client } from "./client";
+import imageUrlBuilder from '@sanity/image-url';
+
+const builder = imageUrlBuilder(client)
+
+function urlFor(source: any) {
+return builder.image(source)
+}
+
+export default urlFor
+
+```
+
+3. Now we can import our helper function into the `BlogList.tsx` file at the top and clear the previous error that was looing for it.
+
+
+4. Errors! We need to whitelist the Sanity CDM from our iamge directory. Head to `next.config.js` and change it as follows:
+
+```
+
+/\*_ @type {import('next').NextConfig} _/
+const nextConfig = {}
+
+module.exports = {
+images: {
+domains: ["cdn.sanity.io"]
+}
+}
+
+```
+We've not whitelisted `cdn.sanity.io`
+
+5. Disgusting! Our images are huge and nothing looks right. Time to style it up. Make the dive surrounding our `<Image />` tag a `relative` div and add the following code. In fact, now is a good time to take a look at some of Tailwinds functionality and add some classes to the `BlogList.tsx` file. Add the structure and stylings below and then I'll explain what's going on:
+
+```
+
+import Image from 'next/image';
+import urlFor from '../../sanity/lib/urlFor';
+
+type Props = {
+posts: Post[];
+};
+
+function BlogList({ posts }: Props) {
+return (
+
+<div>
+<hr className='border-[#ffa024] mb-10' />
+
+    		<div>
+    			{/* Posts */}
+    			{posts.map((post) => (
+    				<div key={post._id} className='flex flex-col group cursor-pointer'>
+    					<div className='relative w-full h-80 drop-shadow-xl group-hover:scale-105 transition-transform duration-200 ease-out'>
+    						<Image
+    							className='object-cover object-left lg:object-center'
+    							src={urlFor(post.mainImage).url()}
+    							alt='image'
+    							fill
+    						/>
+    						<div className='absolute bottom-0 w-full bg-opacity-20 bg-black backdrop-blur-lg rounded drop-shadow-lg text-white p-5 flex justify-between'>
+    							<div>
+    								<p className='font-bold'>{post.title}</p>
+    								<p>
+    									{new Date(post._createdAt).toLocaleDateString('en-US', {
+    										day: 'numeric',
+    										month: 'long',
+    										year: 'numeric',
+    									})}
+    								</p>
+    							</div>
+    						</div>
+    					</div>
+    				</div>
+    			))}
+    		</div>
+    	</div>
+    );
+
+}
+
+export default BlogList;
+
+```
+
+* We've added a `group` class to the parent div of the `<Image />` tag. This allows us to add a `group-hover` class to the child div of the `<Image />` tag. This is a TailwindCSS feature that allows us to add a class to a child element when the parent is hovered.
+
+* We've also added a `transition-transform` class to the parent div which will allow us to animate the scale of the image when hovered.
+
+* We've also added a `drop-shadow-xl` class to the parent div which will add a shadow to the image. We've also added a `duration-200` class to the parent div which will set the duration of the transition to 200ms.
+
+* We've also added an `ease-out` class to the parent div which will set the transition to ease out. We've also added a `scale-105` class to the child div which will set the scale of the image to 105% when hovered.
+
+* We've also added a `transition-transform` class to the child div which will allow us to animate the scale of the image when hovered.
+
+* We've also added a `duration-200` class to the child div which will set the duration of the transition to 200ms.
+
+* We've also added an `ease-out` class to the child div which will set the transition to ease out.
+
+* We've also added a `drop-shadow-lg` class to the child div which will add a shadow to the image.
+
+[ TODO -- GPT to explain what and why we are doing this ]
+
+```
+
+### Install TailwindCSS LineClamp Plugin
+
+1. Install the TailwindCSS LineClamp plugin: `npm install @tailwindcss/line-clamp`
+
+2. Open up the `tailwind.config.js` file and add the following code:
+
+```
+// other code above
+
+ plugins: [
+    require ('@tailwindcss/line-clamp'),],
+// other code below
+```
+
+### Correct the missing "Description" field in the Sanity Schema.
+
+Navigate into the `sanity/schema` folder and open up the `post.ts` file. Add the following code somewhere that it makes the most sense to you. I'll add it just above the `categories` field:
+
+```
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'string'
+    }),
+```
+
+Now add in a description to each of the posts in the studio so we can see it on the front end.

@@ -40,6 +40,12 @@ export default defineType({
         }
       ]
     }),
+
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text'
+    }),
     defineField({
       name: 'categories',
       title: 'Categories',
