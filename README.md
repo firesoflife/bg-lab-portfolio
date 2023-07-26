@@ -909,3 +909,239 @@ Navigate into the `sanity/schema` folder and open up the `post.ts` file. Add the
 ```
 
 Now add in a description to each of the posts in the studio so we can see it on the front end.
+
+### Continue to build out the BlogList Component
+
+1. For the sake of brevity, I'll add the code for the BlogList component here in totality. Note that divs already listed above may also have some added styling, so be sure to look through the whole component.
+
+```
+import Image from 'next/image';
+import urlFor from '../../sanity/lib/urlFor';
+import { ArrowUpRightIcon } from '@heroicons/react/24/solid';
+
+type Props = {
+	posts: Post[];
+};
+
+function BlogList({ posts }: Props) {
+	return (
+		<div>
+			<hr className='border-[ffa024#] mb-10' />
+
+			<div className='grid grid-cols-1 md:grid-cols-2 px-10 gap-10 gap-y-16 pb-24'>
+				{/* Posts */}
+				{posts.map((post) => (
+					<div key={post._id} className='flex flex-col group cursor-pointer'>
+						<div className='relative w-full h-80 drop-shadow-xl group-hover:scale-105 transition-transform duration-200 ease-out'>
+							<Image
+								className='object-cover object-left lg:object-center'
+								src={urlFor(post.mainImage).url()}
+								alt='image'
+								fill
+							/>
+							<div className='absolute bottom-0 w-full bg-opacity-20 bg-black backdrop-blur-lg rounded drop-shadow-lg text-white p-5 flex justify-between'>
+								<div>
+									<p className='font-bold'>{post.title}</p>
+									<p>
+										{new Date(post._createdAt).toLocaleDateString('en-US', {
+											day: 'numeric',
+											month: 'long',
+											year: 'numeric',
+										})}
+									</p>
+								</div>
+
+								<div className='flex flex-col md:flex-row gap-y-2 md:gap-x-2 items-center'>
+									{post.categories.map((category) => (
+										<div className='bg-[#ffa024] text-center text-black px-3 py-1 rounded-full text-sm font-semibold'>
+											<p>{category.title}</p>
+										</div>
+									))}
+								</div>
+							</div>
+						</div>
+
+						<div className='mt-5 flex-1'>
+							<p className='underline text-lg font-bold'>{post.title} </p>
+							<p className='line-clamp-2 text-gray-500 '>{post.description}</p>
+						</div>
+
+						<p className='mt-5 font-bold flex items-center group-hover:underline'>
+							Read Post
+							<ArrowUpRightIcon className='ml-2 h-4 w-4' />
+						</p>
+					</div>
+				))}
+			</div>
+		</div>
+	);
+}
+
+export default BlogList;
+```
+
+Now, things are looking nice. However, you may notice that things are a bit wider -- the images might be a bit .... lenghtly ... widthy? Let's fix that.
+
+2. Hop into the layout file for the main page - `app/(users)/layout.tsx` and add the following code to the `<main>` tag:
+
+```
+import Banner from '../components/Banner';
+import Header from '../components/Header';
+
+type LayoutProps = {
+	children: React.ReactNode;
+};
+
+export default function Layout({ children }: LayoutProps) {
+	return (
+		<>
+			<main className='max-w-7xl mx-auto'>
+				<Header />
+				<Banner />
+				{children}
+			</main>
+		</>
+	);
+}
+```
+
+## Dynamic Client Side Routing
+
+1. In the components file, create a new file `ClientSideRoute.tsx` and add the following code. Note that we are passing as props, the same things we have on the main RooutLayout component. We will pass that as props on this component as well.
+
+```
+'use client'
+
+import Link from 'next/link';
+
+function ClientSideRoute({
+	children,
+	route,
+}: {
+	children: React.ReactNode;
+	route: string;
+}) {
+	return <Link href={route}>{children}</Link>;
+}
+
+export default ClientSideRoute;
+```
+
+So, what is going one here?
+
+- we are making a client side route by using the `use client` note at the top of the file
+- we are passing in `children` as props
+- we are also passing in route and giving it a type of string
+- We then return a Link component from Next and pass in the route as a prop to the Link component.
+- The Link component wraps the children to make them clickable and route to the route we pass in as a prop.
+
+2. Now back in the `BlogList.tsx`, navigate to the div just below the `.map` fuction. Wrap that div in the `ClientSideRoute` component
+
+The code should look like this so far, but I've trancated the middle code between the ClientSideRoute component for brevity:
+
+```
+import Image from 'next/image';
+import urlFor from '../../sanity/lib/urlFor';
+import { ArrowUpRightIcon } from '@heroicons/react/24/solid';
+import ClientSideRoute from './ClientSideRoute';
+
+type Props = {
+	posts: Post[];
+};
+
+function BlogList({ posts }: Props) {
+	return (
+		<div>
+			<hr className='border-[ffa024#] mb-10' />
+
+			<div className='grid grid-cols-1 md:grid-cols-2 px-10 gap-10 gap-y-16 pb-24'>
+				{/* Posts */}
+				{posts.map((post) => (
+					<ClientSideRoute>
+
+					// ... all the code inside the map function
+
+					</ClientSideRoute>
+			))}
+			</div>
+		</div>
+	);
+}
+
+export default BlogList;
+```
+
+3. We need to pass our dynamic route to the ClientSideRoute component. We can do this by adding the following code to the ClientSideRoute component tag:
+
+```
+<ClientSideRoute route={`/post/${post.slug.current}`} key={post._id}>
+```
+
+Note that we also took the key out of the div and added it to the ClientSideRoute component because the new component has the higher key value.
+
+## Create Wildcard Dynamic Routes
+
+1. Inside the (user) folder we are going to create a new folder called `post` and inside that folder we will create another new folder called `[slug]`.
+
+2. Inside the `[slug]` folder, we will create a `page.tsx` inside the `[slug]` folder for our dynamic route and add the following code:
+
+```
+type Props = {
+	params: {
+		slug: string;
+	};
+};
+
+async function Post({ params }: Props) {
+	return <div>Post</div>;
+}
+
+export default Post;
+```
+
+3. Now we are going to need to fetch the data for our Single Posts to render when we click on the BlogList post that we iterated over on the home page. In the `sanity/api` folder, create a new file called `getSinglePost.tsx` and add the following code:
+
+```
+import { groq } from 'next-sanity';
+import { client } from '../lib/client';
+
+async function getSinglePost(slug: string) {
+	return client.fetch(
+		groq`
+    *[_type == "post" && slug.current == $slug][0] {
+        ...,
+        author->,
+        categories[]
+    }
+    `,
+		{ slug }
+	);
+}
+
+export default getSinglePost;
+```
+
+We've queried for our post with the current slug, and then pass in the slug as a variable to the query.
+
+4. We now need to import the `getSinglePost` function into our `[slug]/page.tsx` file and fetch the data. We do this by storing the function in a vairable `singlePost` and then awaiting the `getSinglePost()` function.
+
+```
+import getSinglePost from '@/sanity/api/getSinglePost';
+
+type Props = {
+	params: {
+		slug: string;
+	};
+};
+
+async function Post({ params: { slug } }: Props) {
+	const singlePost = await getSinglePost(slug);
+
+	return <div>Post: {singlePost.slug.current} </div>;
+}
+
+export default Post;
+
+```
+
+This should render out the slug of the post we clicked on to show us that we are correctly fetching the data.
