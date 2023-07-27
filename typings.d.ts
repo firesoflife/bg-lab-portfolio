@@ -21,6 +21,16 @@
     description: string;
  }
 
+ interface SinglePost extends Base {
+    author: Author;
+    body: Block[];
+    categories: category[];
+    mainImage: Image;
+    slug: Slug;
+    title: string;
+    description: string;
+ }
+
  interface Author extends Base {
     bio: Block[];
     image: Image;
