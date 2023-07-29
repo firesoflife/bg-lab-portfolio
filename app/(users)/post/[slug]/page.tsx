@@ -1,14 +1,34 @@
 import Image from 'next/image';
 import getSinglePost from '@/sanity/api/getSinglePost';
 import urlFor from '@/sanity/lib/urlFor';
+import { groq } from 'next-sanity';
 import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/app/components/RichTextComponents';
+import { client } from '@/sanity/lib/client';
 
 type Props = {
 	params: {
 		slug: string;
 	};
 };
+
+// Speed Optimization with StatParams --> Static Pages
+
+export async function generateStaticParams() {
+	const query = groq`*[_type=='post']
+		{
+			slug
+		}
+	`;
+	const slugs: Post[] = await client.fetch(query);
+	const slugRoutes = slugs.map((slug) => slug.slug.current);
+
+	return slugRoutes.map((slug) => ({
+		slug,
+	}));
+}
+
+export const revalidate = 60;
 
 async function Post({ params: { slug } }: Props) {
 	const singlePost = await getSinglePost(slug);

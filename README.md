@@ -1322,8 +1322,84 @@ export const RichTextComponents = {
 
 ## Make things Speedy using NextJS 13
 
-1. Navigate to `app/(users)/post/[slug]/page.tsx` and add the following code to the top of the file:
+1. Navigate to `app/(users)/post/[slug]/page.tsx`. We are going to build a new `groq` query here that will help generate static pages at build time instead of fetching them at runtime. This will make our site much faster. Add the following code to the `page.tsx` file:
 
 ```
+import Image from 'next/image';
+import getSinglePost from '@/sanity/api/getSinglePost';
+import urlFor from '@/sanity/lib/urlFor';
+import { groq } from 'next-sanity';
+import { PortableText } from '@portabletext/react';
+import { RichTextComponents } from '@/app/components/RichTextComponents';
+import { client } from '@/sanity/lib/client';
+
+type Props = {
+	params: {
+		slug: string;
+	};
+};
+
+// Speed Optimization with StatParams --> Static Pages
+
+export async function generateStaticParams() {
+	const query = groq`*[_type=='post']
+		{
+			slug
+		}
+	`;
+	const slugs: Post[] = await client.fetch(query);
+	const slugRoutes = slugs.map((slug) => slug.slug.current);
+
+	return slugRoutes.map((slug) => ({
+		slug,
+	}));
+}
+
+export const revalidate = 60;
+
+// rest of the code below
+```
+
+- Don't forget to import the `groq` function from `next-sanity` and the `client` from `sanity/lib/client`
+
+2. A new **PROBLEM** arises that we need to fix. Because we have made these pages into static pages, if the backend updates the data, the front end will not update. We need to add a `revalidate` property to the `getStaticProps` function. Add the following code to the `page.tsx` file:
 
 ```
+export const revalidate = 30;
+```
+
+This sweet little bit of code will tell NextJS to revalidate the data every 30 seconds. This is a great way to keep the data fresh and the site fast. Worried that this means you'll be making loads of calls to Sanity and using up your quota? Caching. If someone recently visited and got the new data, then boom! Everyone gets the new data. If no one has visited in a while, then the data will be fetched from Sanity. This is a great way to keep things fresh and fast.
+
+## Deploy to Vercel
+
+1. Run `npm i -g vercel`
+
+2. Run `vercel login`
+
+3. Run `vercel`
+
+4. `Set up and dploey....` --> y
+
+5. `Which scope do you want to deploy to?` --> select your scope
+
+6. `Link to existing project?` --> n
+
+7. `What's your project's name?` --> bg-lab
+
+8. `In which directory is your code located?` --> ./
+
+9. `Want to override the settings?` --> n
+
+10. Click the link provided to go to the vercel site
+
+11. The deployment will fail. This is ok. We need to set our environment variables in the Vercel dashboard. Click on your project name, then click on `Settings` and then `Environment Variables` on the left hand side.
+
+12. Head into your Next project code in your editor and copy the 3 lines of code from the `.env.local` file and paste them into the Vercel dashboard. Vercel is smart and if you paste 3 lines with their key value pairs, it will automatically add them to the environment variables on their own separate lines.
+
+13. Click `Save` and then `Redeploy` by runing `vercel` again
+
+## WhiteList the Vercel Domain in Sanity
+
+1. Head to the Sanity dashboard and click on your project name. Then click on `Settings` and then `API` on the left hand side.
+
+2. Scroll down to the `CORS Origins` section and add the Vercel domain to the list of domains. Ensure that `Allow Credentials` is checked.
