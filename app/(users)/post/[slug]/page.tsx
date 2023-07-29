@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import getSinglePost from '@/sanity/api/getSinglePost';
 import urlFor from '@/sanity/lib/urlFor';
+import { PortableText } from '@portabletext/react';
+import { RichTextComponents } from '@/app/components/RichTextComponents';
 
 type Props = {
 	params: {
@@ -66,6 +68,8 @@ async function Post({ params: { slug } }: Props) {
 					</section>
 				</div>
 			</section>
+
+			<PortableText value={singlePost.body} components={RichTextComponents} />
 		</article>
 	);
 }

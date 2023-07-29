@@ -1235,3 +1235,95 @@ There are some cool TailwindCSS features in here that you can check out. I'll ad
 <!-- Add Tailwind explainers -->
 
 ## Portable Text
+
+In the sanity project in the console, run `npm install react-portable-text`
+
+1. Once installed, we are going to add a `PortableText` component that gets passed a components prop `RichTextComponents` that will allow us to render the different types of text that we have in our schema. We will also add a `RichTextComponents.tsx` file in the `components` folder to handle the different types of text.
+
+```
+// all the code within the 'section' tag and above
+</section>
+
+			<PortableText value={singlePost.body} components={RichTextComponents} />
+
+// all the code below the 'section' tag
+```
+
+2. Now we will create the `RichTextComponents.tsx` file in the `components` folder and add the following code:
+
+```
+import Image from 'next/image';
+import Link from 'next/link';
+import urlFor from '@/sanity/lib/urlFor';
+
+export const RichTextComponents = {
+	types: {
+		image: ({ value }: any) => {
+			return (
+				<div className='relative w-full h-96 m-10 mx-auto'>
+					<Image
+						className='object-contain'
+						src={urlFor(value).url()}
+						alt='Blog Post Image'
+						fill
+					/>
+				</div>
+			);
+		},
+	},
+	list: {
+		bullet: ({ children }: any) => (
+			<ul className='ml-10 py-5 list-disc space-y-5'>{children}</ul>
+		),
+		number: ({ children }: any) => (
+			<ol className='mt-lg list-decimal'>{children}</ol>
+		),
+	},
+	block: {
+		h1: ({ children }: any) => (
+			<h1 className='text-5xl py-10 font-bold'>{children}</h1>
+		),
+		h2: ({ children }: any) => (
+			<h2 className='text-4xl py-10 font-bold'> {children}</h2>
+		),
+		h3: ({ children }: any) => (
+			<h2 className='text-3xl py-10 font-bold'> {children}</h2>
+		),
+		h4: ({ children }: any) => (
+			<h2 className='text-2xl py-10 font-bold'> {children}</h2>
+		),
+
+		blockquote: ({ children }: any) => (
+			<blockquote className='border-l-[#194604] border-l-4 pl-5 py-5 my-5 '>
+				{children}
+			</blockquote>
+		),
+	},
+	marks: {
+		link: ({ children, value }: any) => {
+			const rel = !value.href.startWith('/')
+				? 'noreferrer noopener'
+				: undefined;
+
+			return (
+				<Link
+					href={value.href}
+					rel={rel}
+					className='underline decoration-[#194604] hover:decoration-black'>
+					{children}
+				</Link>
+			);
+		},
+	},
+};
+```
+
+3. Ensure that you have some styles added to your 'body' field for your blog posts in the Sanity Studio so you can see the different types of text rendered. I've added a few header types, a list and blockquote to see how it looks. Spoiler - it looks great.
+
+## Make things Speedy using NextJS 13
+
+1. Navigate to `app/(users)/post/[slug]/page.tsx` and add the following code to the top of the file:
+
+```
+
+```
