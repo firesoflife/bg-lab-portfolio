@@ -57,6 +57,7 @@ async function Post({ params: { slug } }: Props) {
 									})}{' '}
 								</p>
 							</div>
+							`
 							<div className='flex items-center space-x-2'>
 								<Image
 									className='rounded-full'
@@ -72,6 +73,7 @@ async function Post({ params: { slug } }: Props) {
 									{/* Author Bio - TODO  */}
 								</div>
 							</div>
+							`
 						</div>
 						<div>
 							<h2 className='italic pt-10'>{singlePost.description} </h2>

@@ -1,8 +1,3 @@
-// import { Ref } from "react";
-// import author from "./sanity/schemas/author";
-// import category from "./sanity/schemas/category";
-// import { Reference } from "sanity";
-
  type Base = {
     _createdAt: Date;
     _id: string;
