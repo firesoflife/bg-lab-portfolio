@@ -8,6 +8,7 @@ async function getPosts() {
             ...,
             author->,
             categories[]->,
+            projectType,
         } | order(_createdAt desc)
    `
 	);

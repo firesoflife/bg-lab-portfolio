@@ -8,11 +8,7 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
 	return (
 		<>
-			<main className='max-w-7xl mx-auto'>
-				<Header />
-				<Banner />
-				{children}
-			</main>
+			<main>{children}</main>
 		</>
 	);
 }
