@@ -5,11 +5,12 @@ import { FaInstagram } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa6';
 
 import Link from 'next/link';
+import BlogListDisplay from '../components/BlogListDisplay';
 
 export const revalidate = 30;
 
 export default async function Home() {
-	const post = await getPosts();
+	// const post = await getPosts();
 
 	return (
 		<>
@@ -47,7 +48,7 @@ export default async function Home() {
 				</div>
 				<footer className='flex p-10 justify-between w-full z-50'>
 					<p className=''>
-						Desing + Code by
+						Design + Code by
 						<br /> Bryan Goertz &copy; 2023
 					</p>
 					<div className='flex align-middle'>

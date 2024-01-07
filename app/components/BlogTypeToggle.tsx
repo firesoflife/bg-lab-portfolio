@@ -1,37 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-type BlogTypeToggleProps = {
-	itProjects: boolean;
-	webDev: boolean;
-};
+const BlogTypeToggle = ({ onToggle }) => {
+	const [blogType, setBlogType] = useState('webDev');
 
-export const BlogTypeToggle: React.FC<BlogTypeToggleProps> = ({
-	itProjects,
-	webDev,
-}) => {
-	const [showITProjects, setShowITProjects] = useState(true);
+	const handleToggle = (type) => {
+		setBlogType(type);
+		onToggle(type);
+	};
+
 	return (
-		<>
-			<div>
-				<ul className='flex space-x-3'>
-					<li>
-						<button
-							onClick={() => setShowITProjects(true)}
-							className='px-5 py-3 text-sm md:text-base text-pink-300 hover:text-pink-200 flex items-center text-center border-b-2 border-transparent hover:border-green-300'>
-							IT Projects
-						</button>
-					</li>
-					<li>
-						<button
-							onClick={() => setShowITProjects(true)}
-							className='px-5 py-3 text-sm md:text-base text-pink-300 hover:text-pink-200 flex items-center text-center border-b-2 border-transparent hover:border-green-300'>
-							Web Dev Projects
-						</button>
-					</li>
-				</ul>
-			</div>
-		</>
+		<div className='flex justify-center space-x-4 py-4'>
+			<button
+				onClick={() => handleToggle('webDev')}
+				className={`py-2 px-4 rounded ${
+					blogType === 'webDev'
+						? 'bg-[#ffa024] text-white'
+						: 'bg-white text-black'
+				}`}>
+				Web Projects
+			</button>
+			<button
+				onClick={() => handleToggle('itProject')}
+				className={`py-2 px-4 rounded ${
+					blogType === 'itProject'
+						? 'bg-[#ffa024] text-white'
+						: 'bg-white text-black'
+				}`}>
+				IT Projects
+			</button>
+		</div>
 	);
 };
+
+export default BlogTypeToggle;

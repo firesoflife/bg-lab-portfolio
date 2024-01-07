@@ -5,16 +5,21 @@ import ClientSideRoute from './ClientSideRoute';
 
 type Props = {
 	posts: Post[];
+	projectType: string;
 };
 
-function BlogList({ posts }: Props) {
+function BlogList({ posts, projectType }: Props) {
+	const filteredPosts = posts.filter(
+		(post) => post.projectType === projectType
+	);
+
 	return (
 		<div>
 			<hr className='border-[ffa024#] mb-10' />
 
 			<div className='grid grid-cols-1 md:grid-cols-2 px-10 gap-10 gap-y-16 pb-24'>
 				{/* Posts */}
-				{posts.map((post) => (
+				{filteredPosts.map((post) => (
 					<ClientSideRoute route={`/post/${post.slug.current}`} key={post._id}>
 						<div className='flex flex-col group cursor-pointer'>
 							<div className='relative w-full h-80 drop-shadow-xl group-hover:scale-105 transition-transform duration-200 ease-out'>
