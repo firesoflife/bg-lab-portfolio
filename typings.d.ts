@@ -7,9 +7,9 @@ type Base = {
 };
 
 interface Post extends Base {
-	author: Author;
+	author?: Author;
 	body: Block[];
-	categories: category[];
+	categories?: category[];
 	mainImage: Image;
 	slug: Slug;
 	title: string;
@@ -20,10 +20,11 @@ interface Post extends Base {
 interface SinglePost extends Base {
 	author: Author;
 	body: Block[];
-	categories: category[];
+	categories: Category[];
 	mainImage: Image;
 	slug: Slug;
 	title: string;
+	link: Url;
 	description: string;
 }
 
@@ -54,7 +55,7 @@ interface Block {
 	_type: 'block';
 	children: Span[];
 	markDefs: any[];
-	style: 'nomal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+	style: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
 interface Span {

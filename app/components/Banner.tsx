@@ -11,9 +11,9 @@ function Banner() {
 					Projects
 				</h2>
 			</div>
-			{/* <p className='mt-5 md:mt-2 text-gray-400 max-w-sm'>
+			<p className='mt-5 md:mt-2 text-gray-400 max-w-sm'>
 				Web Development | | Tech Projects | | Home Lab Projects | | Tutorials
-			</p> */}
+			</p>
 			{/* REPLACE ABOVE P WITH SUB-MENU TO DIFFERENT BLOG TYPES */}
 		</div>
 	);

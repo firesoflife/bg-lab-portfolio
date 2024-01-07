@@ -7,6 +7,7 @@ async function getSinglePost(slug: string) {
     *[_type == "post" && slug.current == $slug][0] {
         ...,
         author->,
+        link,
         categories[]->,
     }
     `,

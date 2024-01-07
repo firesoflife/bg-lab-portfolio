@@ -34,7 +34,7 @@ export default defineType({
 			name: 'author',
 			title: 'Author',
 			type: 'reference',
-			to: { type: 'author' },
+			to: [{ type: 'author' }],
 		}),
 		defineField({
 			name: 'mainImage',
@@ -58,6 +58,11 @@ export default defineType({
 			type: 'text',
 		}),
 		defineField({
+			name: 'link',
+			title: 'Link',
+			type: 'url',
+		}),
+		defineField({
 			name: 'categories',
 			title: 'Categories',
 			type: 'array',
@@ -74,7 +79,6 @@ export default defineType({
 			type: 'blockContent',
 		}),
 	],
-
 	preview: {
 		select: {
 			title: 'title',

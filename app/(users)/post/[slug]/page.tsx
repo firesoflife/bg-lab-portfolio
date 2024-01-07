@@ -6,6 +6,7 @@ import { PortableText } from '@portabletext/react';
 import { RichTextComponents } from '@/app/components/RichTextComponents';
 import { client } from '@/sanity/lib/client';
 import Header from '@/app/components/Header';
+import Link from 'next/link';
 
 type Props = {
 	params: {
@@ -18,7 +19,8 @@ type Props = {
 export async function generateStaticParams() {
 	const query = groq`*[_type=='post']
 		{
-			slug
+			slug,
+
 		}
 	`;
 	const slugs: Post[] = await client.fetch(query);
@@ -66,7 +68,7 @@ async function Post({ params: { slug } }: Props) {
 										)}{' '}
 									</p>
 								</div>
-								`
+
 								<div className='flex items-center space-x-2'>
 									<Image
 										className='rounded-full'
@@ -82,18 +84,28 @@ async function Post({ params: { slug } }: Props) {
 										{/* Author Bio - TODO  */}
 									</div>
 								</div>
-								`
 							</div>
 							<div>
-								<h2 className='italic pt-10'>{singlePost.description} </h2>
-								<div className='flex items-center justify-end mt-auto space-x-2'>
-									{singlePost.categories.map((category: Category) => (
-										<p
-											key={category._id}
-											className='bg-slate-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold mt-4'>
-											{category.title}
-										</p>
-									))}
+								<h2 className='italic pt-10 mb-10'>
+									{singlePost.description}{' '}
+								</h2>
+
+								<div className=' flex items-center justify-between mt-auto space-x-2'>
+									<Link
+										href={singlePost?.link || '/'}
+										target='_blank'
+										className='z-50 bg-slate-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold mt-4 cursor-pointer'>
+										Vist Site
+									</Link>
+									<div className='flex space-x-4'>
+										{singlePost.categories.map((category: Category) => (
+											<p
+												key={category._id}
+												className=' z-50 bg-slate-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold mt-4'>
+												{category.title}
+											</p>
+										))}
+									</div>
 								</div>
 							</div>
 						</section>
