@@ -1,17 +1,15 @@
 import getPosts from '@/sanity/api/getPosts';
 import bgImage from '../../public/bg-portfolio4.png';
 import { TiSocialFacebook, TiSocialLinkedin } from 'react-icons/ti';
-import { FaInstagram } from 'react-icons/fa6';
+import { FaInstagram, FaMedium } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa6';
+import { RiMediumLine } from 'react-icons/ri';
 
 import Link from 'next/link';
-import BlogListDisplay from '../components/BlogListDisplay';
 
 export const revalidate = 30;
 
 export default async function Home() {
-	// const post = await getPosts();
-
 	return (
 		<>
 			<main
@@ -37,19 +35,20 @@ export default async function Home() {
 							</Link>
 						</button>
 						<p className='mb-4'>See why I'm the right person for the job</p>
-						<button className='text-left'>
+						<button className='text-left' disabled>
 							<Link
 								href='#work'
-								className='inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
+								className='cursor-not-allowed inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
 								SEE MY CV
-							</Link>
+							</Link>{' '}
+							<span className='ml-4'> --&gt; Coming Soon </span>
 						</button>
 					</div>
 				</div>
 				<footer className='flex p-10 justify-between w-full z-50'>
 					<p className=''>
 						Design + Code by
-						<br /> Bryan Goertz &copy; 2023
+						<br /> Bryan Goertz &copy; 2024
 					</p>
 					<div className='flex align-middle'>
 						<ul className='flex space-x-3'>
@@ -71,6 +70,11 @@ export default async function Home() {
 							<li className='border-b-2 border-transparent hover:border-b-2 hover:border-pink-100 text-2xl pb-1'>
 								<Link href={'https://www.instagram.com/bryangoertz/'}>
 									<FaInstagram height={100} />{' '}
+								</Link>
+							</li>
+							<li className='border-b-2 border-transparent hover:border-b-2 hover:border-pink-100 text-2xl pb-1'>
+								<Link href={'https://medium.com/@bryangoertz_56517'}>
+									<FaMedium height={100} />{' '}
 								</Link>
 							</li>
 						</ul>

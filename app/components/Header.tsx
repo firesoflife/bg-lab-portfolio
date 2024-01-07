@@ -21,7 +21,7 @@ function Header() {
 			</div>
 			<div>
 				<Link
-					href='/'
+					href='mailto:bryangoertz@gmail.com'
 					className='px-5 py-3 text-sm md:text-base bg-gray-900 text-[#ffa024] flex items-center rounded-full text-center'>
 					Get In Touch with the BG-Lab
 				</Link>
