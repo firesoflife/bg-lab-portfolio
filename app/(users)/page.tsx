@@ -3,7 +3,6 @@ import bgImage from '../../public/bg-portfolio4.png';
 import { TiSocialFacebook, TiSocialLinkedin } from 'react-icons/ti';
 import { FaInstagram, FaMedium } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa6';
-import { RiMediumLine } from 'react-icons/ri';
 
 import Link from 'next/link';
 
@@ -13,36 +12,38 @@ export default async function Home() {
 	return (
 		<>
 			<main
-				className='relative text-white h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat '
+				className='relative text-white h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat  '
 				style={{ backgroundImage: `url(${bgImage.src})` }}>
 				<div className='absolute top-0 right-0 bottom-0 left-0 bg-black bg-opacity-50'></div>
 				<div className='relative flex flex-col z-10 h-full justify-center'>
-					<h1 className='text-5xl font-light mb-4 text-green-300'>
-						<span className='text-pink-300'>Hello,</span> I'm Bryan
-					</h1>
-					<h2 className='text-3xl mb-6'>
-						Web Designer | Developer | IT Professional
-					</h2>
-					<p className='mb-4'>
-						Have a poke around and take a look at some of my work
-					</p>
-					<div className='flex flex-col justify-between'>
-						<button className='text-left mb-10'>
-							<Link
-								href='/blog'
-								className='inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
-								SEE MY WORK
-							</Link>
-						</button>
-						<p className='mb-4'>See why I'm the right person for the job</p>
-						<button className='text-left' disabled>
-							<Link
-								href='#work'
-								className='cursor-not-allowed inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
-								SEE MY CV
-							</Link>{' '}
-							<span className='ml-4'> --&gt; Coming Soon </span>
-						</button>
+					<div className='w-11/12 mx-auto'>
+						<h1 className='text-5xl font-light mb-4 text-green-300'>
+							<span className='text-pink-300'>Hello,</span> I'm Bryan
+						</h1>
+						<h2 className='text-3xl mb-6'>
+							Web Designer | Developer | IT Professional
+						</h2>
+						<p className='mb-4'>
+							Have a poke around and take a look at some of my work
+						</p>
+						<div className='flex flex-col justify-between'>
+							<button className='text-left mb-10'>
+								<Link
+									href='/blog'
+									className='inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
+									SEE MY WORK
+								</Link>
+							</button>
+							<p className='mb-4'>See why I'm the right person for the job</p>
+							<button className='text-left' disabled>
+								<Link
+									href='#work'
+									className='cursor-not-allowed inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
+									SEE MY CV
+								</Link>{' '}
+								<span className='ml-4'> --&gt; Coming Soon </span>
+							</button>
+						</div>
 					</div>
 				</div>
 				<footer className='flex p-10 justify-between w-full z-50'>
