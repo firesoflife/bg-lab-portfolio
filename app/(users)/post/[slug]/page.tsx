@@ -86,17 +86,30 @@ async function Post({ params: { slug } }: Props) {
 								</div>
 							</div>
 							<div>
-								<h2 className='italic pt-10 mb-10'>
+								<h2 className='text-xl font-bold pt-10'>Description:</h2>
+								<h3 className='italic mb-10 max-w-7xl font-serif'>
 									{singlePost.description}{' '}
-								</h2>
+								</h3>
 
 								<div className=' flex items-center justify-between mt-auto space-x-2'>
-									<Link
-										href={singlePost?.link || '/'}
-										target='_blank'
-										className='z-50 bg-slate-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold mt-4 cursor-pointer'>
-										Vist Site
-									</Link>
+									{singlePost.link && (
+										<Link
+											href={singlePost?.link || <p>No link available</p>}
+											target='_blank'
+											className='z-50 bg-slate-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold mt-4 cursor-pointer'>
+											Vist Site
+										</Link>
+									)}
+									{<p> </p>}
+									{singlePost.git && (
+										<Link
+											href={singlePost?.git || <p>No link available</p>}
+											target='_blank'
+											className='z-50 bg-slate-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold mt-4 cursor-pointer'>
+											Vist Site
+										</Link>
+									)}
+									{<p> </p>}
 									<div className='flex space-x-4'>
 										{singlePost.categories.map((category: Category) => (
 											<p
@@ -111,8 +124,12 @@ async function Post({ params: { slug } }: Props) {
 						</section>
 					</div>
 				</section>
-
-				<PortableText value={singlePost.body} components={RichTextComponents} />
+				<div className='w-10/12 mx-auto text-lg'>
+					<PortableText
+						value={singlePost.body}
+						components={RichTextComponents}
+					/>
+				</div>
 			</article>
 		</>
 	);
