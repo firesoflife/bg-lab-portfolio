@@ -2,10 +2,14 @@
 
 import { useState } from 'react';
 
-const BlogTypeToggle = ({ onToggle }) => {
+type BlogTypeToggleProps = {
+	onToggle: (type: string) => void;
+};
+
+const BlogTypeToggle: React.FC<BlogTypeToggleProps> = ({ onToggle }) => {
 	const [blogType, setBlogType] = useState('webDev');
 
-	const handleToggle = (type) => {
+	const handleToggle = (type: string) => {
 		setBlogType(type);
 		onToggle(type);
 	};
