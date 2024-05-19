@@ -27,7 +27,7 @@ export const RichTextComponents = {
 	},
 	block: {
 		normal: ({ children }: any) => (
-			<p className='py-2 leading-relaxed font-mono text-2xl, w-10/12'>
+			<p className='py-2 leading-relaxed font-mono text-2xl, md:w-10/12'>
 				{children}
 			</p>
 		),

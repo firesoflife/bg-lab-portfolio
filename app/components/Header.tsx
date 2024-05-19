@@ -6,8 +6,8 @@ import logo from '../../public/bg-lab-logo.png';
 
 function Header() {
 	return (
-		<div className='flex items-center justify-between space-x-2 font-bold px-10 py-5'>
-			<div className='flex items-center space-x-2'>
+		<div className='flex flex-col md:flex-row items-center justify-between space-x-2 font-bold px-10 py-5'>
+			<div className='flex items-center space-x-2 mb-4'>
 				<Link href='/'>
 					<Image
 						className='rounded-full'

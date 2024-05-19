@@ -124,7 +124,7 @@ async function Post({ params: { slug } }: Props) {
 						</section>
 					</div>
 				</section>
-				<div className='w-10/12 mx-auto text-lg'>
+				<div className='md:w-10/12 md:mx-auto md:text-lg'>
 					<PortableText
 						value={singlePost.body}
 						components={RichTextComponents}

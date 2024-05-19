@@ -79,3 +79,31 @@ interface Title {
 	_type: 'string';
 	current: string;
 }
+
+interface CV extends Base {
+	title: string;
+	slug: Slug;
+	address: string;
+	city: string;
+	state: string;
+	zip: string;
+	country: string;
+	phone: string;
+	email: string;
+	objective: string;
+	education: EducationReference[];
+	// Additional fields for projects, experience, skills, interests, and references
+	// can be added here as per your schema's structure
+}
+
+interface EducationReference extends Reference {
+	_ref: string; // References to education documents
+}
+
+interface Education extends Base {
+	degree: string;
+	institution: string;
+	start: Date;
+	end: Date | null; // null if still attending
+	description: Block[]; // Assuming 'block' type is similar to the one in your existing typings
+}

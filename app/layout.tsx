@@ -1,7 +1,12 @@
-import Banner from './components/Banner';
-import Header from './components/Header';
+import { Lato } from 'next/font/google';
 import './globals.css';
 import type { Metadata } from 'next';
+
+const lato = Lato({
+	weight: ['100', '400', '700'],
+	subsets: ['latin'],
+	display: 'swap',
+});
 
 export const metadata: Metadata = {
 	title: 'BG-LAB',
@@ -14,7 +19,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang='en'>
+		<html lang='en' className='lato.className'>
 			<head />
 			<body className='bg-slate-800 text-gray-300'>{children}</body>
 		</html>
