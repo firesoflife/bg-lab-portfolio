@@ -1,26 +1,48 @@
-import React from 'react';
+import getCV from '@/sanity/api/getCV';
+import Link from 'next/link';
 
-const CV = () => {
+// Icons
+import { FaLinkedin } from 'react-icons/fa';
+import { FaGithub } from 'react-icons/fa';
+
+const CV = async () => {
+	const cvData: CV = await getCV();
 	return (
 		<div>
 			<div className='bg-neutral-300 p-8'>
+				<h1 className='text-4xl text-center text-neutral-800 m-5 font-serif underline underline-offset-4 decoration-black'>
+					{cvData.title}
+				</h1>
 				<div className='max-w-4xl mx-auto bg-neutral-800 shadow-lg py-24 px-24'>
-					<div className='grid grid-cols-2 gap-4 mb-6'>
+					<section className='flex flex-col'>
 						<div>
-							<h1 className='text-3xl font-thin flex flex-col'>
-								<span>Bryan</span>
-								<span className='ml-3'>Goertz</span>
+							<h1 className='text-3xl font-thin flex flex-col justify-center text-center mb-4'>
+								Bryan Goertz
 							</h1>
-							<p className='text-sm'>[Objective]</p>
+							<div className='text-center'>
+								<p>
+									{cvData.address}, {cvData.city}, {cvData.state}, {cvData.zip},{' '}
+									{cvData.country}
+								</p>
+								<p>
+									{cvData.phone} | {cvData.email}{' '}
+								</p>
+								<div className='my-4 text-3xl flex  mx-auto px-8 justify-center gap-x-12 pb-10'>
+									<Link href='' className=''>
+										<FaLinkedin />
+									</Link>
+									<Link href=''>
+										<FaGithub />
+									</Link>
+								</div>
+							</div>
 						</div>
-						<div className='text-right'>
-							<p>[Address]</p>
-							<p>[Phone]</p>
-							<p>[Email]</p>
-							<p>[LinkedIn Profile]</p>
-							<p>[Twitter/Blog/Portfolio]</p>
-						</div>
-					</div>
+					</section>
+
+					<section className='pb-8 font-thin'>
+						<h2 className='text-2xl'>Profile</h2>
+						<div className='border bg-white w-full'></div>
+					</section>
 
 					<div className='mb-6'>
 						<h2 className='font-bold text-xl mb-2'>Education</h2>

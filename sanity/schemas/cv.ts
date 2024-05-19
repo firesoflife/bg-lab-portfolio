@@ -32,7 +32,7 @@ export const cv = defineType({
 			},
 			group: 'title',
 		}),
-		// Adress fields
+		// Address fields
 		defineField({
 			name: 'address',
 			title: 'Address',
@@ -86,7 +86,7 @@ export const cv = defineType({
 		defineField({
 			name: 'education',
 			title: 'Education',
-			type: 'array',
+			type: 'array',git 
 			of: [
 				defineArrayMember({
 					type: 'reference',

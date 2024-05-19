@@ -8,6 +8,7 @@ import { cv } from './schemas/cv';
 import { education } from './schemas/education';
 import skills from './schemas/skills';
 import { experience } from './schemas/experience';
+import { profileBlock } from './schemas/profileBlock';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
 	types: [
@@ -19,5 +20,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
 		education,
 		skills,
 		experience,
+		profileBlock,
 	],
 };
