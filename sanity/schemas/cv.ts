@@ -86,7 +86,7 @@ export const cv = defineType({
 		defineField({
 			name: 'education',
 			title: 'Education',
-			type: 'array',git 
+			type: 'array',
 			of: [
 				defineArrayMember({
 					type: 'reference',

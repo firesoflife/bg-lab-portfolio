@@ -1,53 +1,11 @@
-type Base = {
+// typings.d.ts
+
+interface Base {
 	_createdAt: Date;
 	_id: string;
 	_rev: string;
 	_type: string;
 	_updatedAt: Date;
-};
-
-interface Post extends Base {
-	author?: Author;
-	body: Block[];
-	categories?: category[];
-	mainImage: Image;
-	slug: Slug;
-	title: string;
-	description: string;
-	projectType: string;
-}
-
-interface SinglePost extends Base {
-	author: Author;
-	body: Block[];
-	categories: Category[];
-	mainImage: Image;
-	slug: Slug;
-	title: string;
-	link: Url;
-	description: string;
-}
-
-interface Author extends Base {
-	bio: Block[];
-	image: Image;
-	name: string;
-	slug: Slug;
-}
-
-interface Image extends Base {
-	_type: 'image';
-	asset: Reference;
-}
-
-interface Reference extends Base {
-	_ref: string;
-	_type: 'reference';
-}
-
-interface Slug extends Base {
-	_type: 'slug';
-	current: string;
 }
 
 interface Block {
@@ -65,19 +23,53 @@ interface Span {
 	text: string;
 }
 
+interface Image {
+	_type: 'image';
+	asset: Reference;
+}
+
+interface Reference {
+	_ref: string;
+	_type: 'reference';
+}
+
+interface Slug {
+	_type: 'slug';
+	current: string;
+}
+
+interface Author extends Base {
+	name: string;
+	slug: Slug;
+	image: Image;
+	bio: Block[];
+}
+
 interface Category extends Base {
 	description: string;
 	title: string;
 }
 
-interface mainImage {
-	_type: 'image';
-	asset: 'reference';
+interface Post extends Base {
+	author?: Author;
+	body: Block[];
+	categories?: Category[];
+	mainImage: Image;
+	slug: Slug;
+	title: string;
+	description: string;
+	projectType: string;
 }
 
-interface Title {
-	_type: 'string';
-	current: string;
+interface SinglePost extends Base {
+	author: Author;
+	body: Block[];
+	categories: Category[];
+	mainImage: Image;
+	slug: Slug;
+	title: string;
+	link: string;
+	description: string;
 }
 
 interface CV extends Base {
@@ -92,12 +84,10 @@ interface CV extends Base {
 	email: string;
 	objective: string;
 	education: EducationReference[];
-	// Additional fields for projects, experience, skills, interests, and references
-	// can be added here as per your schema's structure
 }
 
 interface EducationReference extends Reference {
-	_ref: string; // References to education documents
+	_ref: string;
 }
 
 interface Education extends Base {
@@ -105,5 +95,10 @@ interface Education extends Base {
 	institution: string;
 	start: Date;
 	end: Date | null; // null if still attending
-	description: Block[]; // Assuming 'block' type is similar to the one in your existing typings
+	description: Block[];
+}
+
+interface Url {
+	_type: 'url';
+	link: string;
 }
