@@ -4,7 +4,7 @@ import { client } from '../lib/client';
 async function getCV() {
 	return client.fetch(
 		groq`
-        *[_type == "cv"][0] {
+        *[_type == "cv"]{
             ...,
             title,
             slug,
@@ -16,11 +16,45 @@ async function getCV() {
             phone,
             email,
             objective,
-            education[]->,
-            skills[]->,
-            experience[]->,
-            interests[]->,
-        }`
+            skillsList,
+            education[]->{
+                _id,
+                degree,
+                institution,
+                start,
+                end,
+                description
+            },
+            certification[]->{
+                _id,
+                title,
+                institution,
+                achieved,
+                expiration,
+                description,
+                "imageUrl": image.asset->url,
+                certReference,
+                link
+            },
+            skills[]->{
+                _id,
+                title
+            },
+            experience[]->{
+                _id,
+                jobTitle,
+                company,
+                start,
+                end,
+                description
+            },
+            interests[]->{
+                _id,
+                title
+            },
+        }
+        [0]    // Ensuring only the first cv document is fetched
+        `
 	);
 }
 

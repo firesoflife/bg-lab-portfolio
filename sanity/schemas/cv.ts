@@ -6,8 +6,9 @@ export const cv = defineType({
 	type: 'document',
 	groups: [
 		{ name: 'title', title: 'Title and Meta' },
+		{ name: 'summary', title: 'Summary' },
 		{ name: 'address', title: 'Address' },
-		{ name: 'objective', title: 'Objective' },
+		{ name: 'certification', title: 'Certifications' },
 		{ name: 'education', title: 'Education' },
 		{ name: 'projects', title: 'Projects and Awards' },
 		{ name: 'experience', title: 'Experience' },
@@ -77,10 +78,10 @@ export const cv = defineType({
 		}),
 		// Objective field
 		defineField({
-			name: 'objective',
-			title: 'Objective',
+			name: 'about',
+			title: 'About',
 			type: 'text',
-			group: 'objective',
+			group: 'summary',
 		}),
 		// Education field
 		defineField({
@@ -95,6 +96,19 @@ export const cv = defineType({
 			],
 			group: 'education',
 		}),
+		// Certification field
+		defineField({
+			name: 'certification',
+			title: 'Certifications',
+			type: 'array',
+			of: [
+				defineArrayMember({
+					type: 'reference',
+					to: [{ type: 'certification' }],
+				}),
+			],
+			group: 'certification',
+		}),
 		// Work experience field
 		defineField({
 			name: 'experience',
@@ -107,6 +121,13 @@ export const cv = defineType({
 				}),
 			],
 			group: 'experience',
+		}),
+		defineField({
+			name: 'skillsList',
+			title: 'List of Skills',
+			type: 'array',
+			of: [{ type: 'string' }],
+			group: 'skills',
 		}),
 		// Skills field
 		defineField({

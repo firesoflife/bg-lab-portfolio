@@ -83,7 +83,11 @@ interface CV extends Base {
 	phone: string;
 	email: string;
 	objective: string;
+	skillsList: Skill[];
 	education: EducationReference[];
+	skills: SkillReference[];
+	experience: ExperienceReference[];
+	interests: InterestReference[];
 }
 
 interface EducationReference extends Reference {
@@ -91,14 +95,52 @@ interface EducationReference extends Reference {
 }
 
 interface Education extends Base {
+	_id: string;
 	degree: string;
 	institution: string;
-	start: Date;
-	end: Date | null; // null if still attending
-	description: Block[];
+	start: string;
+	end: string | null; // null if still attending
+	description: string[];
 }
 
 interface Url {
 	_type: 'url';
 	link: string;
+}
+
+interface ExperienceReference extends Reference {
+	_ref: string;
+}
+
+interface Experience {
+	_id: string;
+	jobTitle: string;
+	company: string;
+	start: string;
+	end: string | null; // null if still working
+	description: string[];
+}
+
+interface Certification {
+	_id: string;
+	title: string;
+	institution: string;
+	achieved: string;
+	description: string[];
+	imageUrl: string;
+	alt: string;
+	certReference: string;
+	link: URL;
+}
+
+interface SkillReference extends Reference {
+	_ref: string;
+}
+
+export interface Skill {
+	_id: string;
+	title: string;
+}
+interface InterestReference extends Reference {
+	_ref: string;
 }

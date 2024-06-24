@@ -9,6 +9,7 @@ import { education } from './schemas/education';
 import skills from './schemas/skills';
 import { experience } from './schemas/experience';
 import { profileBlock } from './schemas/profileBlock';
+import { certification } from './schemas/certifaction';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
 	types: [
@@ -18,6 +19,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
 		blockContent,
 		cv,
 		education,
+		certification,
 		skills,
 		experience,
 		profileBlock,

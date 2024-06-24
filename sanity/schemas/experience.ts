@@ -18,12 +18,12 @@ export const experience = defineType({
 		defineField({
 			name: 'start',
 			title: 'Start Date',
-			type: 'date',
+			type: 'string',
 		}),
 		defineField({
 			name: 'end',
 			title: 'End Date',
-			type: 'date',
+			type: 'string',
 			description: 'Leave blank if still attending',
 		}),
 		defineField({
