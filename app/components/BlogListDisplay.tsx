@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import BlogTypeToggle from './BlogTypeToggle';
 import BlogList from './BlogList';
+import { Post } from '@/typings';
 
 type BlogListDisplay = {
 	posts: Post[];
