@@ -37,7 +37,7 @@ export default async function Home() {
 							<p className='mb-4'>See why I'm the right person for the job</p>
 							<button className='text-left'>
 								<Link
-									href='#work'
+									href='/curriculum_vitae'
 									className='cursor-pointer inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
 									SEE MY CV
 								</Link>{' '}
