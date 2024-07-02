@@ -35,13 +35,13 @@ export default async function Home() {
 								</Link>
 							</button>
 							<p className='mb-4'>See why I'm the right person for the job</p>
-							<button className='text-left' disabled>
+							<button className='text-left'>
 								<Link
 									href='#work'
-									className='cursor-not-allowed inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
+									className='cursor-pointer inline-block outline outline-1 outline-green-300 text-white px-6 py-3 rounded-sm font-semibold transition duration-300 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50'>
 									SEE MY CV
 								</Link>{' '}
-								<span className='ml-4'> --&gt; Coming Soon </span>
+								<span className='ml-4'> --&gt; Work in progress </span>
 							</button>
 						</div>
 					</div>
